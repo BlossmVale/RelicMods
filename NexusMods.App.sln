@@ -186,6 +186,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexusMods.Collections", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexusMods.Collections.Tests", "tests\NexusMods.Collections.Tests\NexusMods.Collections.Tests.csproj", "{8C817874-7A88-450E-B216-851A1B03684C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexusMods.Games.Bethesda", "src\NexusMods.Games.Bethesda\NexusMods.Games.Bethesda.csproj", "{92EC307f-6f89-4434-85d2-1f32a282b781}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexusMods.Games.Larian", "src\NexusMods.Games.Larian\NexusMods.Games.Larian.csproj", "{2A35EBB5-1CA6-4F5D-8CE8-352146C82C28}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NexusMods.Networking.ModUpdates", "src\NexusMods.Networking.ModUpdates\NexusMods.Networking.ModUpdates.csproj", "{8B246C04-F372-47F6-9397-F658915429A8}"

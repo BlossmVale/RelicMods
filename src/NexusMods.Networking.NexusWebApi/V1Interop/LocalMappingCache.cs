@@ -69,8 +69,27 @@ internal class LocalMappingCache : IGameDomainToGameIdMappingCache
                 .Select(x => (Id: NexusModsGameId.From(x.Id), Domain: GameDomain.From(x.DomainName)))
                 .ToArray();
 
-            gameIdToDomain = pairs.DistinctBy(tuple => tuple.Id).ToFrozenDictionary(tuple => tuple.Id, tuple => tuple.Domain);
+            var duplicates = pairs
+.GroupBy(x => x.Domain)
+.Where(g => g.Count() > 1)
+.ToList();
+
+            foreach (var group in duplicates)
+            {
+                Console.WriteLine($"Domain: {group.Key}");
+                foreach (var item in group)
+                {
+                    Console.WriteLine($"  ID: {item.Id}");
+                }
+            }
+
+            // gameIdToDomain = pairs.DistinctBy(tuple => tuple.Id).ToFrozenDictionary(tuple => tuple.Id, tuple => tuple.Domain);
+            gameIdToDomain = pairs
+    .GroupBy(x => x.Domain)
+    .Select(g => g.First())
+    .ToFrozenDictionary(x => x.Id, x => x.Domain);
             gameDomainToId = pairs.DistinctBy(tuple => tuple.Domain).ToFrozenDictionary(tuple => tuple.Domain, tuple => tuple.Id);
+            Console.WriteLine($"gameIdToDomain: {gameIdToDomain.Count}, gameDomainToId: {gameDomainToId.Count}");
             Debug.Assert(gameIdToDomain.Count == gameDomainToId.Count);
             return true;
         }

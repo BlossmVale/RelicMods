@@ -548,7 +548,7 @@
         <value>Uninstall</value>
     </data>
     <data name="LoginMessageView_BodyTextBlock" xml:space="preserve">
-        <value>To easily download mods from Nexus Mods you will need to log in with your Nexus Mods account.  To add mods manually from your drive, you do not need to log in.</value>
+        <value>To easily download mods from Nexus Mods you will need to log in with your Nexus Mods account.To add mods manually from your drive, you do not need to log in.</value>
     </data>
     <data name="LoginMessageView_Title" xml:space="preserve">
         <value>Log in to get started</value>
@@ -974,7 +974,7 @@ To apply changes or launch the game again, please close the game first.</value>
         <value>Managing this game will affect existing mods</value>
     </data>
     <data name="ManageGameWarning_Desc1" xml:space="preserve">
-        <value>If you have existing mods, they will be detected and can be used alongside the app in the ‘External Changes’ page.  However, if you later stop managing this game or uninstall the app, those mods will be permanently removed from your game folder.</value>
+        <value>If you have existing mods, they will be detected and can be used alongside the app in the ‘External Changes’ page.However, if you later stop managing this game or uninstall the app, those mods will be permanently removed from your game folder.</value>
     </data>
     <data name="ManageGameWarning_Desc2" xml:space="preserve">
         <value>To keep any mods you want to save, please back them up before continuing.</value>
@@ -1128,11 +1128,11 @@ Keep the downloaded files in your library in case you want to retry the installa
     <data name="DialogPremiumCollection_Cancel" xml:space="preserve">
         <value>Continue with manual install</value>
     </data>
-    
+
     <data name="PremiumDialog_GoPremiumButton" xml:space="preserve">
         <value>Go Premium</value>
     </data>
-    
+
     <data name="Library_Update_SomeDownloadsFailed_Title" xml:space="preserve">
         <value>Some Mod Updates Failed to Download</value>
     </data>
@@ -1154,15 +1154,15 @@ Keep the downloaded files in your library in case you want to retry the installa
         <value>"{0}" has been published as unlisted. Only people with the link can view it.</value>
     </data>
     <data name="Loadout_Dialog_CollectionPublished_FirstPublish_Help" xml:space="preserve">
-        <value>You can change the visibility of your collection at any time in the collection settings.</value> 
+        <value>You can change the visibility of your collection at any time in the collection settings.</value>
     </data>
     <data name="Loadout_Dialog_CollectionPublished_Revision" xml:space="preserve">
-        <value>"{0}" has been published.</value> 
+        <value>"{0}" has been published.</value>
     </data>
     <data name="Loadout_Dialog_CollectionPublished_Revision_Help" xml:space="preserve">
-        <value>We recommend you update this revision's changelog so users can find out what's new.</value> 
+        <value>We recommend you update this revision's changelog so users can find out what's new.</value>
     </data>
-    
+
     <data name="Loadout_Dialog_ShareCollection_UnlistedTitle" xml:space="preserve">
         <value>Unlisted - Recommended for Sharing with Friends</value>
     </data>

@@ -15,6 +15,10 @@
       <EmbeddedResource Include="Resources\BaldursGate3\thumbnail.webp" />
       <None Remove="Resources\BaldursGate3\tile.webp" />
       <EmbeddedResource Include="Resources\BaldursGate3\tile.webp" />
+      <None Remove="Resources\DivinityOriginalSin2\thumbnail.webp" />
+      <EmbeddedResource Include="Resources\DivinityOriginalSin2\thumbnail.webp" />
+      <None Remove="Resources\DivinityOriginalSin2\tile.webp" />
+      <EmbeddedResource Include="Resources\DivinityOriginalSin2\tile.webp" />
     </ItemGroup>
 
     <ItemGroup>

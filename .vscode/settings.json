@@ -1,0 +1,4 @@
+{
+  "nixEnvSelector.nixFile": "${workspaceFolder}/flake.nix",
+  "dotnet.defaultSolution": "NexusMods.App.sln"
+}

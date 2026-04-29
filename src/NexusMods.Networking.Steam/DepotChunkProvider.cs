@@ -25,7 +25,7 @@ public class DepotChunkProvider : IChunkedStreamSource
     }
 
     public Size Size => _fileData.Size;
-    
+
     /// <summary>
     /// The Steam CDN provides data in 1MB chunks
     /// </summary>
@@ -44,6 +44,7 @@ public class DepotChunkProvider : IChunkedStreamSource
 
     public async Task ReadChunkAsync(Memory<byte> buffer, ulong chunkIndex, CancellationToken token = default)
     {
+
         await _session._pipeline.ExecuteAsync(async token =>
             {
                 var chunk = _chunksSorted[chunkIndex];
@@ -53,6 +54,7 @@ public class DepotChunkProvider : IChunkedStreamSource
                 var server = await _session.CDNPool.GetServer();
                 var depotKey = await _session.GetDepotKey(_appId, _depotId);
                 string? cdnAuthToken = null;
+
 
                 var rented = ArrayPool<byte>.Shared.Rent(buffer.Length);
                 var read = 0;

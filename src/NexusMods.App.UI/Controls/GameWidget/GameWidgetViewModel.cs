@@ -66,7 +66,7 @@ public class GameWidgetViewModel : AViewModel<IGameWidgetViewModel>, IGameWidget
                     .Select(inst => MapGameStoreToIcon(inst.LocatorResult.Store))
                     .BindToVM(this, vm => vm.GameStoreIcon)
                     .DisposeWith(disposables);
-                
+
                 IsManagedObservable
                     .Select(v => v ? GameWidgetState.ManagedGame : GameWidgetState.DetectedGame)
                     .OnUI()
@@ -132,7 +132,7 @@ public class GameWidgetViewModel : AViewModel<IGameWidgetViewModel>, IGameWidget
     [Reactive] public ReactiveCommand<Unit, Unit> ViewGameCommand { get; set; }
 
     [Reactive] public ReactiveCommand<Unit, Unit> RemoveAllLoadoutsCommand { get; set; }
-    
+
     public IObservable<bool> IsManagedObservable { get; set; } = Observable.Return(false);
 
 

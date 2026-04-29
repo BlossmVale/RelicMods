@@ -30,7 +30,7 @@ namespace NexusMods.Games.FileHashes;
 internal sealed class FileHashesService : IFileHashesService, IDisposable, IHostedService
 {
     private const string DefaultLanguage = "en-US";
-    
+
     private readonly ScopedAsyncLock _lock = new();
     private readonly FileHashesServiceSettings _settings;
     private readonly IFileSystem _fileSystem;
@@ -329,7 +329,7 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
             HashSet<GogBuild.ReadOnly> gogBuilds = [];
             HashSet<ProductId> gogProducts = [];
             Dictionary<EntityId, GogManifest.ReadOnly> gogManifests = [];
-            
+
             // So first we find all the valid build Ids, and then assume that everything else is a product Id
             foreach (var id in locatorIds)
             {
@@ -343,11 +343,11 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
                     gogBuilds.Add(firstBuild);
                     continue;
                 }
-                
+
                 var productId = ProductId.From(parsedId);
                 gogProducts.Add(productId);
             }
-            
+
             // Now we emit all the files from the build products, and then also from any secondary products
             foreach (var build in gogBuilds)
             {
@@ -356,7 +356,7 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
                     // We only care about the productId of the build, and the productIds of the secondary products
                     if (!(depot.ProductId == build.ProductId || gogProducts.Contains(depot.ProductId)))
                         continue;
-                    
+
                     // If there is a language setting for the files, they have to be the same as the default language
                     if (!(depot.Languages.Count == 0 || depot.Languages.Contains(DefaultLanguage)))
                         continue;
@@ -378,7 +378,7 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
                     };
                 }
             }
-            
+
         }
         else if (gameStore == GameStore.Steam)
         {
@@ -386,7 +386,7 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
             {
                 if (!ulong.TryParse(id.Value, out var parsedId))
                     continue;
-                
+
                 var manifestId = ManifestId.From(parsedId);
 
                 if (!SteamManifest.FindByManifestId(Current, manifestId).TryGetFirst(out var firstManifest))
@@ -409,13 +409,13 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
             foreach (var manifestId in locatorIds)
             {
                 var egManifestId = ManifestHash.FromUnsanitized(manifestId.Value);
-                
+
                 if (!EpicGameStoreBuild.FindByManifestHash(Current, egManifestId).TryGetFirst(out var firstManifest))
                 {
                     _logger.LogWarning("No EGS manifest found for {ManifestId}", egManifestId.Value);
                     continue;
                 }
-                
+
                 foreach (var file in firstManifest.Files)
                 {
                     yield return new GameFileRecord
@@ -499,7 +499,7 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
         else if (gameStore == GameStore.Steam)
         {
             List<SteamManifest.ReadOnly> steamManifests = [];
-            
+
             foreach (var steamId in locatorIds)
             {
                 if (!ulong.TryParse(steamId.Value, out var parsedId))
@@ -509,7 +509,13 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
                 }
 
                 var hasManifest = SteamManifest.FindByManifestId(Current, ManifestId.From(parsedId)).TryGetFirst(out var steamManifest);
-                if (hasManifest) steamManifests.Add(steamManifest);
+                if (hasManifest)
+                {
+                    _logger.LogDebug("Steam ID: {SteamID} ManifestName: {ManifestName}", steamId, steamManifest.Name);
+                    steamManifests.Add(steamManifest);
+                } else {
+                    _logger.LogDebug("ID: {SteamID} is not a valid Mafiest", steamId);
+                }
             }
 
             if (steamManifests.Count == 0)
@@ -517,7 +523,9 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
                 _logger.LogDebug("No Steam manifests found for locator metadata");
                 return false;
             }
-            
+
+            _logger.LogDebug("Steam manifests found for locator metadata :)");
+
             var wasFound = VersionDefinition.All(_currentDb!.Db)
                 .Select(version =>
                 {
@@ -540,7 +548,7 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
             var versionsByManifestHash = VersionDefinition.All(_currentDb!.Db)
                 .SelectMany(version =>
                     {
-                        if (VersionDefinition.EpicGameStoreBuildsIds.IsIn(version)) 
+                        if (VersionDefinition.EpicGameStoreBuildsIds.IsIn(version))
                             return version.EpicGameStoreBuilds.Select(build => (Version: version, Build: build));
                         return [];
                     }
@@ -592,7 +600,7 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
         {
             return versionDefinition.SteamManifests.Select(manifest => LocatorId.From(manifest.ManifestId.ToString())).ToArray();
         }
-        
+
         if (gameStore == GameStore.EGS)
         {
             return versionDefinition.EpicGameStoreBuilds.Select(build => LocatorId.From(build.ManifestHash.Value)).ToArray();

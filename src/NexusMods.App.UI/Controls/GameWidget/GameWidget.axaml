@@ -18,9 +18,9 @@
     </Design.DataContext>
 
     <Border Width="140" x:Name="GameWidgetBorder">
-        
+
         <Grid RowDefinitions="Auto,Auto,Auto">
-            
+
             <!-- image -->
             <Border Grid.Row="0" x:Name="ImageSectionBorder" Margin="0 0 0 12">
                 <Grid RowDefinitions="Auto" x:Name="ImageGrid">
@@ -84,7 +84,7 @@
                                              ShowLabel="False"
                                              ShowIcon="Left"
                                              Type="Tertiary"
-                                             Fill="Weak" 
+                                             Fill="Weak"
                                              ToolTip.Tip="{x:Static resources:Language.GameWidget__RemoveGame_ToolTip}"/>
                 </Grid>
 
@@ -102,7 +102,7 @@
                 </StackPanel>
 
             </Panel>
-            
+
             <!-- details -->
             <StackPanel Grid.Row="2"  x:Name="DetailsSectionStackPanel" Margin="0 8 0 0">
                 <TextBlock
@@ -111,8 +111,16 @@
                     TextTrimming="CharacterEllipsis"
                     TextWrapping="NoWrap"
                     x:Name="VersionTextBlock" />
+                    <TextBlock
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="NoWrap"
+                    x:Name="PathTextBlock" />
             </StackPanel>
-            
+
+
+
         </Grid>
     </Border>
 

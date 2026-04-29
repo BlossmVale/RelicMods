@@ -57,7 +57,7 @@ public class ChunkedStream<T> : Stream where T : IChunkedStreamSource
             .Span
             .CopyTo(buffer);
         _position += (ulong)toRead;
-        
+
         Debug.Assert(_position <= _source.Size.Value, "Read more than the size of the stream");
         return toRead;
     }
@@ -68,7 +68,7 @@ public class ChunkedStream<T> : Stream where T : IChunkedStreamSource
         var memory = new Memory<byte>(buffer, offset, count);
         return ReadAsync(memory, cancellationToken).AsTask();
     }
-    
+
     /// <inheritdoc />
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer,
         CancellationToken cancellationToken = new())
@@ -103,7 +103,7 @@ public class ChunkedStream<T> : Stream where T : IChunkedStreamSource
         {
             if (i >= _source.ChunkCount)
                 break;
-            
+
             // If we already have this chunk cached, move on
             if (_cache.TryGet(i, out _))
                 continue;
@@ -115,13 +115,13 @@ public class ChunkedStream<T> : Stream where T : IChunkedStreamSource
             // Create the chunk task. It begins executing here
             _preFetchingTasks[i] = AllocateAndGetChunk(i, token);
         }
-        
+
         // If the chunk is cached, use it
         if (_cache.TryGet(index, out var memory))
         {
             return memory!.Memory;
         }
-        
+
         // If the chunk is being preloaded (could have been in a previous run of this method) use that
         if (_preFetchingTasks.TryGetValue(index, out var task))
         {
@@ -170,7 +170,7 @@ public class ChunkedStream<T> : Stream where T : IChunkedStreamSource
         {
             var mid = (low + high) / 2;
             var startOffset = _source.GetOffset(mid);
-            
+
             ulong nextOffset;
             if (mid + 1 < _source.ChunkCount)
                 nextOffset = _source.GetOffset(mid + 1);

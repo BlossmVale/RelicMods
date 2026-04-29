@@ -33,22 +33,22 @@ public class Session : ISteamSession
     /// Base steam component, this is used for communicating with the Steam network.
     /// </summary>
     private readonly SteamClient _steamClient;
-    
+
     /// <summary>
     /// The component used for user related operations.
     /// </summary>
     private readonly SteamUser _steamUser;
-    
+
     /// <summary>
     /// The component used for getting information about apps (games)
     /// </summary>
     private readonly SteamApps _steamApps;
-    
+
     /// <summary>
     /// Component for getting content information (actual game data)
     /// </summary>
     private readonly SteamContent _steamContent;
-    
+
     /// <summary>
     /// CDN data, used to get download locations for game data.
     /// </summary>
@@ -79,7 +79,7 @@ public class Session : ISteamSession
         _steamContent = _steamClient.GetHandler<SteamContent>()!;
         _cdnClient = new Client(_steamClient);
         _cdnPool = new CDNPool(this);
-        
+
         // Some parts of this interface use callbacks instead of more natural async methods. So we need to register
         // those callbacks here.
         _callbacks = new CallbackManager(_steamClient);
@@ -98,12 +98,12 @@ public class Session : ISteamSession
     /// The Steam Content module
     /// </summary>
     internal SteamContent Content => _steamContent;
-    
+
     /// <summary>
     /// The CDN client, used for downloading game data.
     /// </summary>
     internal Client CDNClient => _cdnClient;
-    
+
     /// <summary>
     /// The CDN pool, used for downloading game data.
     /// </summary>
@@ -113,7 +113,7 @@ public class Session : ISteamSession
     {
         return Task.CompletedTask;
     }
-    
+
     private async Task LoggedOnCallback(SteamUser.LoggedOnCallback callback)
     {
         _isLoggedOn = true;
@@ -124,7 +124,7 @@ public class Session : ISteamSession
     {
         _logger.LogInformation("Disconnected from Steam network.");
     }
-    
+
     private async Task ConnectedCallback(SteamClient.ConnectedCallback callback)
     {
         _isConnected = true;
@@ -133,7 +133,7 @@ public class Session : ISteamSession
         {
             _logger.LogInformation("Using saved auth data to log in.");
             var authData = AuthData.Load(data);
-            
+
             _steamUser.LogOn(new SteamUser.LogOnDetails
                 {
                     Username = authData.Username,
@@ -148,15 +148,19 @@ public class Session : ISteamSession
             {
                 Username = Environment.GetEnvironmentVariable("STEAM_USER"),
                 Password = Environment.GetEnvironmentVariable("STEAM_PASS"),
+
+                Authenticator = new UserConsoleAuthenticator(),
             });
-            
+
+            _logger.LogInformation("Auth Session ID: {SessionId}", authSession);
+
             var pollResponse = await authSession.PollingWaitForResultAsync();
             await _authStorage.SaveAsync(new AuthData
             {
                 Username = pollResponse.AccountName,
                 RefreshToken = pollResponse.RefreshToken,
             }.Save());
-            
+
             _steamUser.LogOn(new SteamUser.LogOnDetails
                 {
                     Username = pollResponse.AccountName,
@@ -179,7 +183,7 @@ public class Session : ISteamSession
                 Username = pollResponse.AccountName,
                 RefreshToken = pollResponse.RefreshToken,
             }.Save());
-            
+
             _steamUser.LogOn(new SteamUser.LogOnDetails
                 {
                     Username = pollResponse.AccountName,
@@ -225,7 +229,7 @@ public class Session : ISteamSession
         {
             _steamClient.Connect();
         }
-        
+
         while (!_isLoggedOn)
         {
             await _callbacks.RunWaitCallbackAsync(cancellationToken);
@@ -237,31 +241,31 @@ public class Session : ISteamSession
         if (_manifestRequestCodes.TryGetValue((appId, depotId, manifestId, branch), out var found))
             return found;
         await ConnectedAsync(CancellationToken.None);
-        
+
         var requestCodeResult = await _steamContent.GetManifestRequestCode(depotId.Value, appId.Value, manifestId.Value, branch);
         if (requestCodeResult == 0)
         {
-            _logger.LogWarning("Failed to get request code for depot {0} manifest {1}", depotId.Value, manifestId.Value);
+            _logger.LogWarning("Failed to get request code for depot {Depot} manifest {Manfiest}", depotId.Value, manifestId.Value);
             throw new FailedToGetRequestCode(appId, depotId, manifestId);
         }
 
-        _logger.LogInformation("Got request code depot {1} manifest {2}", depotId.Value, manifestId.Value);
+        _logger.LogInformation("Got request code depot {Depot} manifest {Manfiest}", depotId.Value, manifestId.Value);
 
         _manifestRequestCodes.TryAdd((appId, depotId, manifestId, branch), requestCodeResult);
         return requestCodeResult;
     }
-    
+
     /// <summary>
     /// Get a depot decryption key for a given depot.
     /// </summary>
     public async Task<byte[]> GetDepotKey(AppId appId, DepotId depotId)
     {
         // Try to get the cached key first
-        
+
         if (_depotKeys.TryGetValue((appId, depotId), out var keyBytes))
             return keyBytes;
         await ConnectedAsync(CancellationToken.None);
-        
+
         var key = await _steamApps.GetDepotDecryptionKey(depotId.Value, appId.Value);
         if (key.Result != EResult.OK)
         {
@@ -271,7 +275,7 @@ public class Session : ISteamSession
 
         _logger.LogInformation("Got depot key for depot `{DepotId}`", depotId.Value);
         _depotKeys.TryAdd((appId, depotId), key.DepotKey);
-        
+
         return key.DepotKey;
     }
 
@@ -286,6 +290,7 @@ public class Session : ISteamSession
 
     public Stream GetFileStream(AppId appId, Manifest manifest, RelativePath file)
     {
+        
         var chunkedProvider = new DepotChunkProvider(this, appId, manifest.DepotId,
             manifest, file
         );

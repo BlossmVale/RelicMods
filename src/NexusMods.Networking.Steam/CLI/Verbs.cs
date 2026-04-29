@@ -22,7 +22,7 @@ public static class Verbs
             .AddModule("steam app", "Verbs for querying app data")
             .AddVerb(() => IndexSteamApp)
             .AddVerb(() => Login);
-    
+
     [Verb("steam login", "Starts the login process for Steam")]
     private static async Task<int> Login(
         [Injected] IRenderer renderer,
@@ -32,8 +32,8 @@ public static class Verbs
         await steamSession.Connect(token);
         return 0;
     }
-    
-    
+
+
     [Verb("steam app index", "Indexes a Steam app and updates the given output folder")]
     private static async Task<int> IndexSteamApp(
         [Injected] IRenderer renderer,
@@ -44,7 +44,7 @@ public static class Verbs
         [Injected] CancellationToken token)
     {
         var steamAppId = AppId.From((uint)appId);
-        
+
         var indentedOptions = new JsonSerializerOptions(jsonSerializerOptions)
         {
             WriteIndented = true,
@@ -75,7 +75,7 @@ public static class Verbs
 
                 var options = new ParallelOptions
                 {
-                    MaxDegreeOfParallelism = 4,
+                    MaxDegreeOfParallelism = 1,
                     CancellationToken = token,
                 };
                 // For each depot and each manifest, download the manifest and index the files
@@ -124,6 +124,8 @@ public static class Verbs
             }
         }
 
+        Console.WriteLine("Finished Indexing");
+
         return 0;
     }
 
@@ -131,7 +133,7 @@ public static class Verbs
     {
         var bag = new ConcurrentBag<Sha1Value>();
         var hashFiles = folder.EnumerateFiles("*.json", true);
-        
+
         await Parallel.ForEachAsync(hashFiles, token, async (file, token) =>
         {
             try
@@ -165,6 +167,7 @@ public static class Verbs
                 await using var progressWrapper = new StreamProgressWrapper<ProgressTask>(stream, state: progressTask, notifyWritten: static (progressTask, values) =>
                 {
                     var (current, _) = values;
+                    // Console.WriteLine($"Value: {current} Added: {per}");
                     var task = progressTask.Increment(current.Value);
                 });
 
@@ -176,7 +179,7 @@ public static class Verbs
                 await writeLock.WaitAsync(token);
                 if (!multiHash.Sha1.Equals(file.Hash))
                     throw new InvalidOperationException("Hash mismatch on downloaded file, expected: " + file.Hash + " got: " + multiHash.Sha1);
-                
+
                 try
                 {
                     path.Parent.CreateDirectory();

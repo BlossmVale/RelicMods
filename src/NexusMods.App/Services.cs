@@ -54,7 +54,7 @@ public static class Services
             // Sequential execution can lead to long startup times depending on number of hostedServices.
             options.ServicesStartConcurrently = true;
             // If executed sequentially, one service taking a long time can trigger the timeout,
-            // preventing StopAsync of other services from being called. 
+            // preventing StopAsync of other services from being called.
             options.ServicesStopConcurrently = true;
         });
         startupMode ??= new StartupMode();
@@ -134,12 +134,13 @@ public static class Services
 
         return services;
     }
-    
+
     private static IServiceCollection AddSupportedGames(this IServiceCollection services)
     {
         Games.RedEngine.Services.AddRedEngineGames(services);
         Games.StardewValley.Services.AddStardewValley(services);
         Games.Larian.BaldursGate3.Services.AddBaldursGate3(services);
+        Games.Larian.DivinityOriginalSin2.Services.AddDivinityOriginalSin2(services);
         Games.CreationEngine.Services.AddCreationEngine(services);
         Games.MountAndBlade2Bannerlord.Services.AddMountAndBlade2Bannerlord(services);
         return services;

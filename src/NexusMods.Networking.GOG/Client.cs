@@ -37,28 +37,28 @@ internal class Client : IClient
 
     private static readonly Uri AuthorizationUri = new("https://auth.gog.com/auth");
     private static readonly Uri RedirectUrl = new("nxm://gog-auth");
-    
+
     private const string ClientId = "58276512461627742";
     private const string ClientSecret = "211e87c957cb191888bdd333b794ee87757367883eb04f79653053302e291734";
-    
+
     private static readonly Uri TokenUri = new("https://auth.gog.com/token");
-    
+
     // A cache of secure URLs, which are CDN urls and associated auth data
     private readonly Dictionary<ProductId, SecureUrl[]> _secureUrls = new();
-    
+
     // A lock for the secure URL cache
     private readonly SemaphoreSlim _secureUrlLock = new(1, 1);
-    
-    // A cache of blocks from the shared block cache. When a depot contains a small file container, we want to 
-    // cache the blocks so that we don't have to re-download them if there are a lot of files that are found in the 
+
+    // A cache of blocks from the shared block cache. When a depot contains a small file container, we want to
+    // cache the blocks so that we don't have to re-download them if there are a lot of files that are found in the
     // same block
     private readonly FastCache<Md5Value, Memory<byte>> _blockCache;
-    
+
     /// <summary>
     /// TTL time for the secure URL cache.
     /// </summary>
     private static readonly TimeSpan CacheTime = TimeSpan.FromMinutes(5);
-    
+
     /// <summary>
     /// A channel for incoming auth URLs.
     /// </summary>
@@ -75,7 +75,7 @@ internal class Client : IClient
         _client = client;
         _logger = logger;
         _connection = connection;
-        
+
         _jsonSerializerOptions = new JsonSerializerOptions(jsonSerializerOptions)
         {
             PropertyNameCaseInsensitive = true,
@@ -83,13 +83,13 @@ internal class Client : IClient
         };
 
         _blockCache = new FastCache<Md5Value, Memory<byte>>();
-        
+
         _pipeline = new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions())
             .AddTimeout(TimeSpan.FromSeconds(60))
             .Build();
     }
-    
+
     /// <summary>
     /// Getter for the HttpClient, used by chunked stream sources
     /// </summary>
@@ -109,7 +109,7 @@ internal class Client : IClient
         };
 
         var urlTask = _authUrls.Reader.ReadAsync(token).AsTask();
-        
+
         _osInterop.OpenUri(new Uri(QueryHelpers.AddQueryString(AuthorizationUri.ToString(), authQuery)));
 
         var code = "";
@@ -123,7 +123,7 @@ internal class Client : IClient
             _logger.LogError(ex, "Failed to get the OAuth code.");
             return;
         }
-        
+
         // Request the token
         var tokenQuery = new Dictionary<string, string?>
         {
@@ -158,7 +158,7 @@ internal class Client : IClient
         await tx.Commit();
         _logger.LogInformation("Logged in successfully to GOG.");
     }
-    
+
 
     /// <summary>
     /// Create a new HttpRequestMessage with the OAuth token.
@@ -170,12 +170,12 @@ internal class Client : IClient
 
         if (NeedsRefresh(authInfo))
             authInfo = await RefreshToken(token);
-        
+
         var message = new HttpRequestMessage(HttpMethod.Get, uri);
         message.Headers.Authorization = new("Bearer", authInfo.AccessToken);
         return message;
     }
-    
+
     /// <summary>
     /// Returns true if the OAuth token needs to be refreshed.
     /// </summary>
@@ -206,15 +206,15 @@ internal class Client : IClient
                 { "grant_type", "refresh_token" },
                 { "refresh_token", authInfo.RefreshToken },
             };
-        
+
             var uri = new Uri(QueryHelpers.AddQueryString(TokenUri.ToString(), tokenQuery));
-        
+
             var tokenResponse = await _client.GetFromJsonAsync<TokenResponse>(uri, token);
             if (tokenResponse == null)
             {
                 throw new Exception("The OAuth login request did not return a token.");
             }
-        
+
             using var tx = _connection.BeginTransaction();
             var e = authInfo.Id;
             tx.Add(e, AuthInfo.AccessToken, tokenResponse.AccessToken);
@@ -230,7 +230,7 @@ internal class Client : IClient
             _semaphore.Release();
         }
     }
-    
+
     /// <summary>
     /// Try to get the authentication information from the database.
     /// </summary>
@@ -345,7 +345,7 @@ internal class Client : IClient
         index = span.IndexOf(magic);
         return index != -1;
     }
-    
+
     /// <summary>
     /// Get all the builds for a given product and OS.
     /// </summary>
@@ -405,7 +405,7 @@ internal class Client : IClient
         var buildDetails = JsonSerializer.Deserialize<BuildDetails>(deflateStream, _jsonSerializerOptions);
         return buildDetails!;
     }
-    
+
     /// <summary>
     /// Get the depot information for a build.
     /// </summary>
@@ -438,7 +438,7 @@ internal class Client : IClient
     /// Given a depot, a build, and a path, return a stream to the file.
     /// </summary>
     public async Task<Stream> GetFileStream(ProductId productId, DepotInfo depotInfo, RelativePath path, CancellationToken token)
-    { 
+    {
         return await _pipeline.ExecuteAsync(async token =>
         {
             var itemInfo = depotInfo.Items.FirstOrDefault(f => f.Path == path);
@@ -497,7 +497,7 @@ internal class Client : IClient
             using var response = await _client.SendAsync(request, token);
             if (response.StatusCode == HttpStatusCode.Forbidden)
                 throw new ForbiddenException("The user is not allowed to access the product.");
-            
+
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Failed to get the secure URLs for {productId}. {response.StatusCode}");
 
