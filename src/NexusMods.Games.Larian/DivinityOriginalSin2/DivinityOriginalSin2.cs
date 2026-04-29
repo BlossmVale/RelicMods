@@ -99,7 +99,7 @@ public class DivinityOriginalSin2 : IGame, IGameData<DivinityOriginalSin2>
     {
         return new Dictionary<LocationId, AbsolutePath>()
         {
-            // { LocationId.Game, gameLocatorResult.Path },
+            { LocationId.Game, gameLocatorResult.Path },
             // { Dos2Constants.ModsLocationId, fileSystem.GetKnownPath(KnownPath.LocalApplicationDataDirectory).Combine("Larian Studios/Baldur's Gate 3/Mods") },
             // { Dos2Constants.PlayerProfilesLocationId, fileSystem.GetKnownPath(KnownPath.LocalApplicationDataDirectory).Combine("Larian Studios/Baldur's Gate 3/PlayerProfiles/Public") },
             // { Dos2Constants.ScriptExtenderConfigLocationId, fileSystem.GetKnownPath(KnownPath.LocalApplicationDataDirectory).Combine("Larian Studios/Baldur's Gate 3/ScriptExtender") },

@@ -152,8 +152,12 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
     {
         using var _ = await _lock.LockAsync();
 
+        forceUpdate = true;
+
         var existingDatabases = ExistingDBs().ToArray();
         var shouldCheckForUpdate = forceUpdate || existingDatabases.Length == 0 || ShouldCheckForUpdate();
+
+        Console.WriteLine($"Should check for update: {shouldCheckForUpdate}");
 
         if (!shouldCheckForUpdate && existingDatabases.TryGetFirst(out var latestDatabase))
         {
@@ -215,6 +219,8 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
         const int defaultTimeout = 15;
 
         var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+        Console.WriteLine($"Path: {storagePath}");
         cts.CancelAfter(delay: TimeSpan.FromSeconds(defaultTimeout));
 
         try
@@ -365,7 +371,7 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
                 }
             }
 
-            foreach (var (_ , manifest) in gogManifests)
+            foreach (var (_, manifest) in gogManifests)
             {
                 foreach (var file in manifest.Files)
                 {
@@ -513,7 +519,9 @@ internal sealed class FileHashesService : IFileHashesService, IDisposable, IHost
                 {
                     _logger.LogDebug("Steam ID: {SteamID} ManifestName: {ManifestName}", steamId, steamManifest.Name);
                     steamManifests.Add(steamManifest);
-                } else {
+                }
+                else
+                {
                     _logger.LogDebug("ID: {SteamID} is not a valid Mafiest", steamId);
                 }
             }

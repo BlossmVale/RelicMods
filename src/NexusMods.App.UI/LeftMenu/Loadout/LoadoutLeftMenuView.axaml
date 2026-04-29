@@ -50,6 +50,7 @@
                                        Theme="{StaticResource BodySMSemiTheme}" />
                         </Expander.Header>
                         <StackPanel Spacing="{StaticResource Spacing-0.5}">
+                            <items:LeftMenuItemView x:Name="InfoItem" />
                             <items:LeftMenuItemView x:Name="HealthCheckItem" />
                             <items:LeftMenuItemView x:Name="ExternalChangesItem" />
                         </StackPanel>

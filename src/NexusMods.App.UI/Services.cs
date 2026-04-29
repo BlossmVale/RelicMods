@@ -70,6 +70,7 @@ using ReactiveUI;
 using ImageButton = NexusMods.App.UI.Controls.Spine.Buttons.Image.ImageButton;
 using NexusLoginOverlayView = NexusMods.App.UI.Overlays.Login.NexusLoginOverlayView;
 using SettingToggleControl = NexusMods.App.UI.Controls.Settings.SettingEntries.SettingToggleControl;
+using NexusMods.App.UI.Pages.Info;
 
 namespace NexusMods.App.UI;
 
@@ -97,7 +98,7 @@ public static class Services
             // View Models
             .AddTransient<MainWindowViewModel>()
             .AddSingleton<IViewLocator, InjectedViewLocator>()
-            
+
             .AddViewModel<CollectionCardDesignViewModel, ICollectionCardViewModel>()
 
             .AddViewModel<DevelopmentBuildBannerViewModel, IDevelopmentBuildBannerViewModel>()
@@ -149,14 +150,14 @@ public static class Services
             .AddView<FileTreeNodeView, IFileTreeNodeViewModel>()
             .AddView<ApplyDiffView, IApplyDiffViewModel>()
             .AddView<FileTreeView, IFileTreeViewModel>()
-            
-            
+
+
             .AddView<MyLoadoutsView, IMyLoadoutsViewModel>()
             .AddViewModel<MyLoadoutsViewModel, IMyLoadoutsViewModel>()
             .AddView<LoadoutCardView, ILoadoutCardViewModel>()
             .AddView<CreateNewLoadoutCardView, ICreateNewLoadoutCardViewModel>()
             .AddViewModel<LoadoutBadgeViewModel, ILoadoutBadgeViewModel>()
-            
+
             .AddView<SettingsView, ISettingsPageViewModel>()
             .AddViewModel<SettingsPageViewModel, ISettingsPageViewModel>()
 
@@ -171,6 +172,13 @@ public static class Services
             .AddViewModel<SettingComboBoxViewModel, ISettingComboBoxViewModel>()
             .AddView<SettingPathsControl, ISettingPathsViewModel>()
             .AddViewModel<SettingPathsViewModel, ISettingPathsViewModel>()
+
+            // .AddView<DiagnosticEntryView, IDiagnosticEntryViewModel>()
+            // .AddViewModel<DiagnosticEntryViewModel, IDiagnosticEntryViewModel>()
+            // .AddView<InfoListView, IDiagnosticListViewModel>()
+            // .AddViewModel<DiagnosticListViewModel, IDiagnosticListViewModel>()
+            // .AddView<DiagnosticDetailsView, IDiagnosticDetailsViewModel>()
+            // .AddViewModel<DiagnosticDetailsViewModel, IDiagnosticDetailsViewModel>()
 
             .AddView<DiagnosticEntryView, IDiagnosticEntryViewModel>()
             .AddViewModel<DiagnosticEntryViewModel, IDiagnosticEntryViewModel>()
@@ -196,7 +204,7 @@ public static class Services
 
             .AddView<CollectionDownloadView, ICollectionDownloadViewModel>()
             .AddViewModel<CollectionDownloadViewModel, ICollectionDownloadViewModel>()
-            
+
             .AddView<LoadOrderView, ILoadOrderViewModel>()
 
             .AddView<UpgradeToPremiumView, IUpgradeToPremiumViewModel>()
@@ -207,7 +215,7 @@ public static class Services
 
             .AddView<ObservableInfoPageView, IObservableInfoPageViewModel>()
             .AddViewModel<ObservableInfoPageViewModel, IObservableInfoPageViewModel>()
-            
+
             .AddView<DebugControlsPageView, IDebugControlsPageViewModel>()
             .AddViewModel<DebugControlsPageViewModel, IDebugControlsPageViewModel>()
 
@@ -219,7 +227,7 @@ public static class Services
 
             .AddView<WelcomeOverlayView, IWelcomeOverlayViewModel>()
             .AddViewModel<WelcomeOverlayViewModel, IWelcomeOverlayViewModel>()
-            
+
             // Dialogs
             .AddView<DialogStandardContentView, IDialogStandardContentViewModel>()
             .AddViewModel<DialogStandardContentViewModel, IDialogStandardContentViewModel>()
@@ -227,7 +235,7 @@ public static class Services
             .AddViewModel<DialogShareCollectionViewModel, IDialogShareCollectionViewModel>()
             .AddView<DialogCollectionPublishedView, IDialogCollectionPublishedViewModel>()
             .AddViewModel<DialogCollectionPublishedViewModel, IDialogCollectionPublishedViewModel>()
-            
+
             .AddView<DialogPremiumCollectionDownloadsView, IDialogPremiumCollectionDownloadsViewModel>()
             .AddViewModel<DialogPremiumCollectionDownloadsViewModel, IDialogPremiumCollectionDownloadsViewModel>()
 
@@ -258,6 +266,8 @@ public static class Services
             .AddSingleton<PageFactoryController>()
             .AddSingleton<IPageFactory, NewTabPageFactory>()
             .AddSingleton<IPageFactory, MyGamesPageFactory>()
+            .AddSingleton<IPageFactory, InfoListPageFactory>()
+            .AddSingleton<IPageFactory, InfoDetailsPageFactory>()
             .AddSingleton<IPageFactory, DiagnosticListPageFactory>()
             .AddSingleton<IPageFactory, DiagnosticDetailsPageFactory>()
             .AddSingleton<IPageFactory, ApplyDiffPageFactory>()
@@ -315,8 +325,8 @@ public static class Services
             .AddSingleton<UpdateChecker>()
             .AddFileSystem()
             .AddImagePipelines();
-        
-        
+
+
     }
 
 }

@@ -13,24 +13,24 @@ public record FileHashesServiceSettings : ISettings
     /// Location where the temporary folder will be stored.
     /// </summary>
     public ConfigurablePath HashDatabaseLocation { get; init; }
-    
+
     /// <summary>
     /// Only checks GitHub for updates this often, in order to avoid API rate limits.
     /// </summary>
     public TimeSpan HashDatabaseUpdateInterval { get; init; } = TimeSpan.FromMinutes(30);
-    
+
     /// <summary>
     /// The URL to the Github API to get the latest release.
     /// </summary>
-    public Uri GithubManifestUrl { get; init; } = new("https://github.com/Nexus-Mods/game-hashes/releases/latest/download/manifest.json");
-    
+    public Uri GithubManifestUrl { get; init; } = new("https://github.com/BlossmVale/game-hashes/releases/latest/download/manifest.json");
+
     /// <summary>
     /// The URL to the GitHub release to download the latest hashes database.
     /// </summary>
-    public Uri GameHashesDbUrl { get; init; } = new("https://github.com/Nexus-Mods/game-hashes/releases/latest/download/game_hashes_db.zip");
-    
+    public Uri GameHashesDbUrl { get; init; } = new("https://github.com/BlossmVale/game-hashes/releases/latest/download/game_hashes_db.zip");
+
     public RelativePath ReleaseFilePath { get; init; } = "game-hashes-release.json";
-    
+
 
     /// <inheritdoc/>
     public static ISettingsBuilder Configure(ISettingsBuilder settingsBuilder)

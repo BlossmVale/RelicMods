@@ -34,25 +34,27 @@ using R3;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Observable = System.Reactive.Linq.Observable;
+using NexusMods.App.UI.Pages.Info;
 
 namespace NexusMods.App.UI.LeftMenu.Loadout;
 
 public class LoadoutLeftMenuViewModel : AViewModel<ILoadoutLeftMenuViewModel>, ILoadoutLeftMenuViewModel
 {
     public WorkspaceId WorkspaceId { get; }
-    
+
     public ILeftMenuItemViewModel LeftMenuItemLibrary { get; }
     public ILeftMenuItemViewModel LeftMenuItemLoadout { get; }
     public ILeftMenuItemViewModel LeftMenuItemNewCollection { get; }
+    public ILeftMenuItemViewModel LeftMenuItemInfo { get; }
     public ILeftMenuItemViewModel LeftMenuItemHealthCheck { get; }
     [Reactive] public ILeftMenuItemViewModel? LeftMenuItemExternalChanges { get; private set; }
-    
+
     [Reactive] public bool HasSingleCollection { get; private set; } = true;
     public IApplyControlViewModel ApplyControlViewModel { get; }
 
     private ReadOnlyObservableCollection<ILeftMenuItemViewModel> _leftMenuCollectionItems = new([]);
     public ReadOnlyObservableCollection<ILeftMenuItemViewModel> LeftMenuCollectionItems => _leftMenuCollectionItems;
-    
+
     [Reactive] private int NewDownloadModelCount { get; set; }
 
     public LoadoutLeftMenuViewModel(
@@ -96,7 +98,7 @@ public class LoadoutLeftMenuViewModel : AViewModel<ILoadoutLeftMenuViewModel>, I
             ToolTip = new StringComponent(Language.LibraryPageTitleToolTip),
             CountObservable = this.WhenAnyValue(vm => vm.NewDownloadModelCount),
         };
-        
+
         // Loadout
         var loadoutLabelObservable = LoadoutDataProviderHelper
             .CountAllLoadoutItems(serviceProvider, loadoutContext.LoadoutId)
@@ -145,8 +147,8 @@ public class LoadoutLeftMenuViewModel : AViewModel<ILoadoutLeftMenuViewModel>, I
                 };
 
                 return new CollectionRevisionLeftMenuItemViewModel(
-                    workspaceController, 
-                    workspaceId, 
+                    workspaceController,
+                    workspaceId,
                     pageData,
                     revision,
                     serviceProvider)
@@ -207,7 +209,24 @@ public class LoadoutLeftMenuViewModel : AViewModel<ILoadoutLeftMenuViewModel>, I
                 };
             })
             .Transform(ILeftMenuItemViewModel (item) => item);
-        
+
+        // Info
+        LeftMenuItemInfo = new InfoLeftMenuItemViewModel(workspaceController,
+            WorkspaceId,
+            new PageData
+            {
+                FactoryId = InfoListPageFactory.StaticId,
+                Context = new InfoListPageContext
+                {
+                    LoadoutId = loadoutContext.LoadoutId,
+                }
+            })
+        {
+            Text = new StringComponent("Information"),
+            Icon = IconValues.Info,
+            ToolTip = new StringComponent("View stats about current game."),
+        };
+
         // Health Check
         LeftMenuItemHealthCheck = new HealthCheckLeftMenuItemViewModel(
             workspaceController,
@@ -229,7 +248,7 @@ public class LoadoutLeftMenuViewModel : AViewModel<ILoadoutLeftMenuViewModel>, I
             Icon = IconValues.Cardiology,
             ToolTip = new StringComponent(Language.LoadoutLeftMenuViewModel_Diagnostics_ToolTip),
         };
-        
+
         // Apply Control
         ApplyControlViewModel = new ApplyControlViewModel(loadoutContext.LoadoutId,
             serviceProvider,
@@ -237,7 +256,7 @@ public class LoadoutLeftMenuViewModel : AViewModel<ILoadoutLeftMenuViewModel>, I
             overlayController,
             gameRunningTracker
         );
-        
+
 
         this.WhenActivated(disposable =>
             {
@@ -253,9 +272,9 @@ public class LoadoutLeftMenuViewModel : AViewModel<ILoadoutLeftMenuViewModel>, I
                         }
 
                         Debug.Assert(overrides.Count == 1, "There should only be one LoadoutOverridesGroup for a LoadoutId");
-                            
+
                         var group = overrides.Items.First().AsLoadoutItemGroup();
-                             
+
                         return new LeftMenuItemViewModel(
                             workspaceController,
                             WorkspaceId,
@@ -264,7 +283,7 @@ public class LoadoutLeftMenuViewModel : AViewModel<ILoadoutLeftMenuViewModel>, I
                                 FactoryId = LoadoutGroupFilesPageFactory.StaticId,
                                 Context = new LoadoutGroupFilesPageContext
                                 {
-                                    GroupIds = [ group.LoadoutItemGroupId ],
+                                    GroupIds = [group.LoadoutItemGroupId],
                                     IsReadOnly = false,
                                 },
                             }

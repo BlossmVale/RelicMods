@@ -15,7 +15,7 @@ public class LoadoutLeftMenuDesignViewModel : AViewModel<ILoadoutLeftMenuViewMod
     public bool HasSingleCollection { get; } = true;
     public WorkspaceId WorkspaceId { get; } = new();
     public IApplyControlViewModel ApplyControlViewModel { get; } = new ApplyControlDesignViewModel();
-    
+
     public ILeftMenuItemViewModel LeftMenuItemLibrary { get; } = new LeftMenuItemDesignViewModel
     {
         Text = new StringComponent(Language.LibraryPageTitle),
@@ -29,12 +29,18 @@ public class LoadoutLeftMenuDesignViewModel : AViewModel<ILoadoutLeftMenuViewMod
 
     public ILeftMenuItemViewModel LeftMenuItemNewCollection { get; } = null!;
 
+    public ILeftMenuItemViewModel LeftMenuItemInfo { get; } = new LeftMenuItemDesignViewModel
+    {
+        Text = new StringComponent(Language.LoadoutLeftMenuViewModel_LoadoutLeftMenuViewModel_Diagnostics),
+        Icon = IconValues.Cardiology,
+    };
+
     public ILeftMenuItemViewModel LeftMenuItemHealthCheck { get; } = new LeftMenuItemDesignViewModel
     {
         Text = new StringComponent(Language.LoadoutLeftMenuViewModel_LoadoutLeftMenuViewModel_Diagnostics),
         Icon = IconValues.Cardiology,
     };
-    
+
     public ILeftMenuItemViewModel LeftMenuItemExternalChanges { get; } = new LeftMenuItemDesignViewModel
     {
         Text = new StringComponent(Language.LoadoutLeftMenuViewModel_External_Changes),
@@ -44,14 +50,14 @@ public class LoadoutLeftMenuDesignViewModel : AViewModel<ILoadoutLeftMenuViewMod
     public LoadoutLeftMenuDesignViewModel()
     {
         LeftMenuCollectionItems = new ReadOnlyObservableCollection<ILeftMenuItemViewModel>([
-                
+
                 new LeftMenuItemDesignViewModel()
                 {
                     Text = new StringComponent("My Collection"),
                     Icon = IconValues.CollectionsOutline,
                     IsToggleVisible = true,
                 },
-                
+
                 new LeftMenuItemDesignViewModel()
                 {
                     Text = new StringComponent("Stardew Valley Very Expanded"),

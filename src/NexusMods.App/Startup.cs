@@ -29,7 +29,7 @@ public class Startup
     private static ulong _windowCount;
 
 #pragma warning disable CS0028 // Disables warning about not being a valid entry point
-    
+
     /// <summary>
     /// Main entry point for the application, the application loop will only exit when the token is cancelled.
     /// </summary>
@@ -37,16 +37,16 @@ public class Startup
     {
         if (_hasBeenSetup)
             throw new InvalidOperationException("Startup has already been called!");
-        
+
         _hasBeenSetup = true;
         _provider = provider;
         _logger = provider.GetRequiredService<ILogger<Startup>>();
-        
+
         var logger = provider.GetRequiredService<ILogger<Startup>>();
         logger.LogInformation("Version: {Version} Commit: {CommitHash} Build Date: {BuildDate}", ApplicationConstants.Version, ApplicationConstants.CommitHash, ApplicationConstants.BuildDate);
 
         var builder = BuildAvaloniaApp(provider);
-        
+
         // NOTE(erri120): DI is lazy by default and these services
         // do additional initialization inside their constructors.
         // We need to make sure their constructors are called to
@@ -106,6 +106,7 @@ public class Startup
                 // NOTE(erri120): Prevents DBus exceptions for tooltips.
                 // For details see https://github.com/Nexus-Mods/NexusMods.App/issues/2799
                 UseDBusMenu = false,
+                OverlayPopups = true,
             })
             .With(new SkiaOptions
             {
@@ -122,9 +123,9 @@ public class Startup
 
         Locator.CurrentMutable.UnregisterCurrent(typeof(IViewLocator));
         Locator.CurrentMutable.Register(serviceProvider.GetRequiredService<InjectedViewLocator>, typeof(IViewLocator));
-        
+
         Locator.CurrentMutable.RegisterConstant<IBindingTypeConverter>(new SizeToStringTypeConverter());
-        
+
 
 
         return app;
