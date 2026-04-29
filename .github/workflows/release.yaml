@@ -89,7 +89,7 @@ jobs:
       # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
       ProjectFile: ${{ needs.transformInputs.outputs.ProjectFile }}
       RetentionDays: 1
-      SignExecutable: true
+      SignExecutable: false
     secrets:
       ES_USERNAME: ${{ secrets.ES_USERNAME }}
       ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
