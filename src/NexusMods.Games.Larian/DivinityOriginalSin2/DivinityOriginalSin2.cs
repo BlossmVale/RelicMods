@@ -50,6 +50,25 @@ public class DivinityOriginalSin2 : IGame, IGameData<DivinityOriginalSin2>
 
         LibraryItemInstallers =
         [
+            new GenericPatternMatchInstaller(provider) {
+                InstallFolderTargets = [
+                    new InstallFolderTarget {
+                        DestinationGamePath = new GamePath(Dos2Constants.ModsLocationId, ""),
+                        KnownValidFileExtensions = [Dos2Constants.PakFileExtension],
+FileExtensionsToDiscard =
+                        [
+                            KnownExtensions.Txt, KnownExtensions.Md, KnownExtensions.Pdf, KnownExtensions.Png,
+                            KnownExtensions.Json, new Extension(".lnk"),
+                        ],
+                    },
+new InstallFolderTarget
+                    {
+                        DestinationGamePath = new GamePath(LocationId.Game, "DefEd"),
+                        KnownSourceFolderNames = ["DefEd"],
+                        Names = ["Generated", "Public"],
+                    },
+                ]
+            }
             // new DOS2SEInstaller(provider),
             // new GenericPatternMatchInstaller(provider)
             // {
@@ -100,8 +119,8 @@ public class DivinityOriginalSin2 : IGame, IGameData<DivinityOriginalSin2>
         return new Dictionary<LocationId, AbsolutePath>()
         {
             { LocationId.Game, gameLocatorResult.Path },
-            // { Dos2Constants.ModsLocationId, fileSystem.GetKnownPath(KnownPath.LocalApplicationDataDirectory).Combine("Larian Studios/Baldur's Gate 3/Mods") },
-            // { Dos2Constants.PlayerProfilesLocationId, fileSystem.GetKnownPath(KnownPath.LocalApplicationDataDirectory).Combine("Larian Studios/Baldur's Gate 3/PlayerProfiles/Public") },
+            { Dos2Constants.ModsLocationId, gameLocatorResult.LinuxCompatabilityDataProvider!.WinePrefixDirectoryPath.Combine("drive_c/users/steamuser/Documents").Combine("Larian Studios/Divinity Original Sin 2 Definitive Edition/Mods") },
+            { Dos2Constants.PlayerProfilesLocationId, fileSystem.GetKnownPath(KnownPath.MyDocumentsDirectory).Combine("Larian Studios/Divinity Original Sin 2 Definitive Edition/PlayerProfiles") },
             // { Dos2Constants.ScriptExtenderConfigLocationId, fileSystem.GetKnownPath(KnownPath.LocalApplicationDataDirectory).Combine("Larian Studios/Baldur's Gate 3/ScriptExtender") },
         }.ToImmutableDictionary();
     }
@@ -111,6 +130,6 @@ public class DivinityOriginalSin2 : IGame, IGameData<DivinityOriginalSin2>
         if (installation.LocatorResult.TargetOS.IsOSX) return new GamePath(LocationId.Game, "Contents/MacOS/Baldur's Gate 3");
 
         // Use launcher to allow choosing between DirectX11 and Vulkan on GOG, Steam already always starts the launcher
-        return new GamePath(LocationId.Game, "Launcher/LariLauncher.exe");
+        return new GamePath(LocationId.Game, "DefEd/bin/EoCApp.exe");
     }
 }

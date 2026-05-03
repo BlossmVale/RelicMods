@@ -59,6 +59,8 @@ internal class SteamLocator : IGameLocator
 
             var platform = linuxCompatibilityDataProvider is null ? OSInformation.Shared.Platform : OSPlatform.Windows;
 
+            Console.WriteLine($"Prefix: {winePrefixDirectoryPath} locatorId: {locatorIds[0]}");
+
             yield return new GameLocatorResult
             {
                 Game = game,
@@ -67,6 +69,7 @@ internal class SteamLocator : IGameLocator
                 Platform = platform,
                 StoreIdentifier = storeIdentifier.ToString(),
                 Store = Store,
+                LinuxCompatabilityDataProvider = linuxCompatibilityDataProvider,
                 Locator = this,
             };
         }
